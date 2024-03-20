@@ -17,7 +17,7 @@
 # volume mapped in order to easy export images
 
 # This Dockerfile is installable on both x86, x86-64, armhf and arm64 systems
-ARG ARCH=
+ARG ARCH=x86-64
 FROM ${ARCH}debian:buster
 
 # It is also possible to emulate an arm system inside docker,
@@ -52,8 +52,8 @@ RUN echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";' > /etc/ap
 
 # We now have Debian Bullseye (11) so cached images require the permit to
 # change the releaseinfo from stable -> oldstable
-RUN apt-get update --allow-releaseinfo-change
-RUN apt-get update && apt-get install -y \
+RUN apt update --allow-releaseinfo-change
+RUN apt update && apt install -y \
       dialog \
       apt-utils \
       locales
@@ -61,7 +61,7 @@ RUN apt-get update && apt-get install -y \
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LANG en_US.utf8
 
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bash \
       bash-completion \
       vim \
@@ -86,7 +86,7 @@ RUN apt-get update && apt-get install -y \
       jq
 
 # Packages needed for vyos-build
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       build-essential \
       python3-pystache \
       squashfs-tools \
@@ -99,7 +99,7 @@ RUN apt-get update && apt-get install -y \
 
 # Syslinux and Grub2 is only supported on x86 and x64 systems
 RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
-      apt-get update && apt-get install -y \
+      apt update && apt install -y \
         syslinux \
         grub2; \
     fi
@@ -107,7 +107,7 @@ RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
 #
 # Building libvyosconf requires a full configured OPAM/OCaml setup
 #
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debhelper \
       libffi-dev \
       libpcre3-dev \
@@ -146,7 +146,7 @@ RUN eval $(opam env --root=/opt/opam --set-root) && \
     opam pin add vyos1x-config https://github.com/vyos/vyos1x-config.git#51f6402a -y
 
 # Packages needed for libvyosconfig
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       quilt \
       libpcre3-dev \
       libffi-dev
@@ -207,7 +207,7 @@ RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
     fi
 
 # Packages needed for vyatta-cfg
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       autotools-dev \
       libglib2.0-dev \
       libboost-filesystem-dev \
@@ -222,7 +222,7 @@ RUN apt-get update && apt-get install -y \
       cpio
 
 # Packages needed for vyatta-cfg-firewall
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       autotools-dev \
       autoconf \
       automake \
@@ -230,7 +230,7 @@ RUN apt-get update && apt-get install -y \
 
 # Packages needed for Linux Kernel
 # gnupg2 is required by Jenkins for the TAR verification
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       gnupg2 \
       rsync \
       libncurses5-dev \
@@ -241,21 +241,21 @@ RUN apt-get update && apt-get install -y \
       cpio
 
 # Packages needed for Accel-PPP
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       liblua5.3-dev \
       libssl1.1 \
       libssl-dev \
       libpcre3-dev
 
 # Packages needed for Wireguard
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debhelper-compat \
       dkms \
       pkg-config \
       systemd
 
 # Packages needed for iproute2
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bison \
       debhelper \
       flex \
@@ -274,7 +274,7 @@ RUN apt-get update && apt-get install -y \
 
 # Prerequisites for building rtrlib
 # see http://docs.frrouting.org/projects/dev-guide/en/latest/building-frr-for-debian8.html
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       cmake \
       dpkg-dev \
       debhelper \
@@ -292,7 +292,7 @@ RUN export RTRLIB_VERSION="0.6.3" && export ARCH=$(dpkg-architecture -qDEB_HOST_
 # available from Debian Bullseye
 RUN echo "deb http://deb.debian.org/debian/ bullseye main" \
       > /etc/apt/sources.list.d/bullseye.list && \
-    apt-get update && apt-get install -y -t bullseye \
+    apt update && apt install -y -t bullseye \
       libyang-dev \
       libyang1; \
     rm -f /etc/apt/sources.list.d/bullseye.list
@@ -300,7 +300,7 @@ RUN echo "deb http://deb.debian.org/debian/ bullseye main" \
 # Packages needed to build FRR itself
 # https://github.com/FRRouting/frr/blob/master/doc/developer/building-libyang.rst
 # for more info
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bison \
       chrpath \
       debhelper \
@@ -328,12 +328,12 @@ RUN apt-get update && apt-get install -y \
       texinfo
 
 # Packages needed for hvinfo
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       gnat \
       gprbuild
 
 # Packages needed for vyos-1x
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       fakeroot \
       libzmq3-dev \
       python3 \
@@ -352,7 +352,7 @@ RUN apt-get update && apt-get install -y \
 # Packages needed for vyos-1x-xdp package, gcc-multilib is not available on
 # arm64 but required by XDP
 RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
-      apt-get update && apt-get install -y \
+      apt update && apt install -y \
         gcc-multilib \
         clang \
         llvm \
@@ -371,20 +371,20 @@ RUN GO_VERSION_INSTALL="1.18.3" ; \
 RUN echo "export PATH=/opt/go/bin:$PATH" >> /etc/bash.bashrc
 
 # Packages needed for ipaddrcheck
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       libcidr0 \
       libcidr-dev \
       check
 
 # Packages needed for vyatta-quagga
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       libpam-dev \
       libcap-dev \
       libsnmp-dev \
       gawk
 
 # Packages needed for vyos-strongswan
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bison \
       bzip2 \
       debhelper \
@@ -414,13 +414,13 @@ RUN apt-get update && apt-get install -y \
       python3-stdeb
 
 # Packages needed for vyos-opennhrp
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       libc-ares-dev
 
 # Packages needed for Qemu test-suite
 # This is for now only supported on i386 and amd64 platforms
 RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
-      apt-get update && apt-get install -y \
+      apt update && apt install -y \
         python3-pexpect \
         ovmf \
         qemu-system-x86 \
@@ -431,7 +431,7 @@ RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
 # Packages needed for building vmware and GCE images
 # This is only supported on i386 and amd64 platforms
 RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
-     apt-get update && apt-get install -y \
+     apt update && apt install -y \
       kpartx \
       parted \
       udev \
@@ -440,7 +440,7 @@ RUN if dpkg-architecture -ii386 || dpkg-architecture -iamd64; then \
     fi
 
 # Packages needed for vyos-cloud-init
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       pep8 \
       pyflakes \
       python3-configobj \
@@ -459,31 +459,31 @@ RUN apt-get update && apt-get install -y \
       cloud-utils
 
 # Packages needed for libnss-mapuser & libpam-radius
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       libaudit-dev
 
 # Install utillities for building grub and u-boot images
 RUN if dpkg-architecture -iarm64; then \
-    apt-get update && apt-get install -y \
+    apt update && apt install -y \
       dosfstools \
       u-boot-tools \
       grub-efi-$(dpkg-architecture -qDEB_HOST_ARCH); \
     elif dpkg-architecture -iarmhf; then \
-    apt-get update && apt-get install -y \
+    apt update && apt install -y \
       dosfstools \
       u-boot-tools \
       grub-efi-arm; \
     fi
 
 # Packages needed for libnftnl
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debhelper-compat \
       libmnl-dev \
       libtool \
       pkg-config
 
 # Packages needed for nftables
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       asciidoc-base \
       automake \
       bison \
@@ -502,14 +502,14 @@ RUN apt-get update && apt-get install -y \
       xsltproc
 
 # Packages needed for libnetfilter-conntrack
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debhelper-compat \
       libmnl-dev \
       libnfnetlink-dev \
       libtool
 
 # Packages needed for conntrack-tools
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bison \
       debhelper \
       flex \
@@ -524,7 +524,7 @@ RUN apt-get update && apt-get install -y \
       libtool
 
 # Packages needed for wide-dhcpv6
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       bison \
       debhelper \
       flex \
@@ -532,12 +532,12 @@ RUN apt-get update && apt-get install -y \
       rsync
 
 # Packages needed for vyos-http-api-tools
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       dh-virtualenv \
       python3-venv
 
 # Packages needed for ocserv
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       autogen \
       libev-dev \
       libgnutls28-dev \
@@ -557,7 +557,7 @@ RUN apt-get update && apt-get install -y \
       libgeoip-dev
 
 # Packages needed for keepalived
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       autoconf \
       libglib2.0-dev \
       libip4tc-dev \
@@ -577,7 +577,7 @@ RUN apt-get update && apt-get install -y \
       pkg-config
 
 # Packages needed for dropbear
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debhelper-compat \
       dh-exec \
       libtomcrypt-dev \
@@ -585,7 +585,7 @@ RUN apt-get update && apt-get install -y \
       libz-dev
 
 # Packages needed for hostapd (wpa_supplicant)
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       libdbus-1-dev \
       libssl-dev \
       libncurses5-dev \
@@ -599,7 +599,7 @@ RUN apt-get update && apt-get install -y \
       docbook-utils
 
 # Packages needed for ocserv
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       autogen \
       debhelper \
       freeradius \
@@ -642,16 +642,19 @@ RUN apt-get update && apt-get install -y \
 #
 # fpm: a command-line program designed to help you build packages (e.g. deb)
 #
-RUN apt-get update && apt-get install -y \
-      ruby \
-      ruby-dev \
-      rubygems \
-      build-essential
+RUN apt update && apt install -y \
+      gcc \
+      make \
+      libssl-dev \
+      zlib1g-dev \
+      rbenv \
+      ruby-build
+RUN rbenv install 3.3.0 && rbenv global 3.3.0
 RUN gem install public_suffix -v 4.0.7
 RUN gem install --no-document fpm
 
 # debmake: a native Debian tool for preparing sources for packaging
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
       debmake \
       python3-debian
 
