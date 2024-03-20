@@ -17,8 +17,8 @@
 # volume mapped in order to easy export images
 
 # This Dockerfile is installable on both x86, x86-64, armhf and arm64 systems
-ARG ARCH=x86-64
-FROM ${ARCH}debian:buster
+ARG ARCH=
+FROM ${ARCH}debian:bookworm
 
 # It is also possible to emulate an arm system inside docker,
 # execution of this emulated system needs to be executed on an x86 or x86-64 host.
